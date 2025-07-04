@@ -99,8 +99,8 @@ class MyProcessing {
   public var iWindDirection as Number = 0;
   public var bWindValid as Boolean = false;
   // ... circling
-  public var bCirclingCount as Number = 0;
-  public var bNotCirclingCount as Number = 0;
+  public var iCirclingCount as Number = 0;
+  public var iNotCirclingCount as Number = 0;
   public var bIsPreviousGeneral as Boolean = true;
   public var bAutoThermalTriggered as Boolean = false;
   // ... plot buffer (using integer-only operations!)
@@ -389,13 +389,13 @@ class MyProcessing {
     self.windStep();
     
     // ... circling Auto Switch
-    if($.oMySettings.bVariometerAutoThermal && !self.bAutoThermalTriggered && self.bCirclingCount >=10) {
+    if($.oMySettings.bVariometerAutoThermal && !self.bAutoThermalTriggered && self.iCirclingCount >= 10) {
       self.bAutoThermalTriggered = true;
       Ui.switchToView(new MyViewVarioplot(),
                 new MyViewVarioplotDelegate(),
                 Ui.SLIDE_IMMEDIATE);
     }
-    if($.oMySettings.bVariometerAutoThermal && self.bAutoThermalTriggered && self.bNotCirclingCount >=25) {
+    if($.oMySettings.bVariometerAutoThermal && self.bAutoThermalTriggered && self.iNotCirclingCount >= 25) {
       self.bAutoThermalTriggered = false;
       if(self.bIsPreviousGeneral) {
         Ui.switchToView(new MyViewGeneral(),
@@ -484,7 +484,7 @@ class MyProcessing {
       else {
         if(self.iWindOldSector == self.iWindSector) {
           //Same sector
-          self.bNotCirclingCount += 1;
+          self.iNotCirclingCount += 1;
         }
         else {
           //More than 360/num of sectors, discard data
@@ -498,8 +498,8 @@ class MyProcessing {
     var iMax = 0;
     // Sys.println(format("DEBUG: Number of wind sectors ~ $1$", [self.iWindSectorCount]));
     if(self.iWindSectorCount.abs() >= self.DIRECTION_NUM_OF_SECTORS) {
-      if(self.bCirclingCount >= 10) { self.bNotCirclingCount = 0; } //Definitely circling
-      self.bCirclingCount += 1;
+      if(self.iCirclingCount >= 10) { self.iNotCirclingCount = 0; } //Definitely circling
+      self.iCirclingCount += 1;
       for(var i = 1; i < self.DIRECTION_NUM_OF_SECTORS; i++) {
         if(self.afSpeed[i] > self.afSpeed[iMax]) { iMax = i; }
         if(self.afSpeed[i] < self.afSpeed[iMin]) { iMin = i; }
@@ -513,8 +513,8 @@ class MyProcessing {
       }
     }
     else {
-      if(self.bNotCirclingCount >= 25) { self.bCirclingCount = 0; } //No longer circling
-      bNotCirclingCount += 1;
+      if(self.iNotCirclingCount >= 25) { self.iCirclingCount = 0; } //No longer circling
+      self.iNotCirclingCount += 1;
     }
   }
 
